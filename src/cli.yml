@@ -1,0 +1,29 @@
+name: bingo_generator
+version: "0.1.0"
+author: hjaremko <hjaremko@outlook.com>
+about: Bingo generator
+args:
+    - source:
+        short: s
+        long: source
+        value_name: FILE
+        help: Specify source file (default source.txt)
+        takes_value: true
+    - cells:
+        short: c
+        long: cells
+        value_name: COUNT
+        help: Specify grid size (default 5)
+        takes_value: true
+    - output:
+        short: o
+        long: output
+        value_name: FILE
+        help: Specify output file (default bingo.png)
+        takes_value: true
+    - samples:
+        short: i
+        long: samples
+        value_name: VALUE
+        help: Specify amount of output files produced
+        takes_value: true
