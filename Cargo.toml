@@ -1,18 +1,19 @@
 [package]
 name = "bingo_generator"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["hjaremko <hjaremko@outlook.com>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-imageproc = "0.19.2"
-image = { version = "0.22.2", default-features = false }
-rusttype = "0.8.2"
+imageproc = "0.20"
+image = { version = "0.23", default-features = false }
+rusttype = "0.8.3"
 textwrap = "0.11"
-rand = "0.7.2"
+rand = "0.7"
 clap = {version = "2.33", features = ["yaml"]}
+ttf-firacode = "0.1.0"
 
 [dev-dependencies]
-image = "0.22.2"
+image = "0.23"

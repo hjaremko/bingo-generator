@@ -1,6 +1,6 @@
 use imageproc::drawing::{draw_text_mut, draw_line_segment_mut};
 use image::{Rgb, RgbImage};
-use rusttype::{FontCollection, Scale, Font};
+use rusttype::{Font, Scale};
 use textwrap::fill;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
@@ -31,8 +31,7 @@ struct Bingo<'a>
 impl<'a> Bingo<'a> {
     pub fn new(size: usize, count: usize, source_path: &str) -> Self {
         let (s, bonus) = Bingo::read_source(source_path, count);
-        let f = Vec::from(include_bytes!("../fonts/AnonymousPro-Bold.ttf") as &[u8]);
-        let f = FontCollection::from_bytes(f).unwrap().into_font().unwrap();
+        let f = Font::from_bytes(ttf_firacode::REGULAR).expect("failed loading font");
 
         Bingo {
             canvas_size: size,
@@ -61,7 +60,13 @@ impl<'a> Bingo<'a> {
     }
 
     fn read_source(filename: &str, cell_count: usize) -> (Vec<String>, String) {
-        let file = File::open(filename).unwrap();
+        let file = match File::open(filename) {
+            Ok(t) => { t }
+            Err(_) => {
+                println!("Error opening {}", &filename);
+                std::process::exit(2);
+            }
+        };
         let reader = BufReader::new(file);
 
         let mut lines = reader.lines();
@@ -136,14 +141,14 @@ impl<'a> Bingo<'a> {
             let starting_line = (max_cell_lines / 2) - (x / 2) - 1;
 
             for (i, cell_line) in cell_lines.enumerate() {
-                let cell_line = format!("{:^15}", cell_line);
+                let cell_line = format!("{:^16}", cell_line);
 
                 draw_text_mut(
                     canvas,
                     color,
                     (col * self.cell_size) as u32,
                     (line * self.cell_size + i * height + starting_line * height) as u32,
-                    Scale { x: height as f32, y: height as f32 },
+                    Scale::uniform(height as f32),
                     self.font.borrow(),
                     cell_line.as_str(),
                 );
@@ -155,8 +160,16 @@ impl<'a> Bingo<'a> {
 fn main() {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();
-    let source_file = matches.value_of("source").unwrap_or("source.txt");
-    let cell_count: usize = matches.value_of("cells").unwrap_or("5").parse().unwrap();
+
+    let source_file = match matches.value_of("source") {
+        None => {
+            println!("You must specify source file");
+            std::process::exit(1)
+        }
+        Some(s) => { s }
+    };
+
+    let cell_count: usize = matches.value_of("cells").unwrap_or("5").parse::<usize>().expect("Not a valid number");
     let output_file = matches.value_of("output").unwrap_or("bingo.png");
     let samples = matches.value_of("samples").unwrap_or("1").parse::<u32>().expect("Not a valid number");
 
