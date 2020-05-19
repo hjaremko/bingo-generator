@@ -65,7 +65,7 @@ impl<'a> Bingo<'a> {
         let reader = BufReader::new(file);
 
         let mut lines = reader.lines();
-        let bonus_tile = lines.nth(0).unwrap().unwrap();
+        let bonus_tile = lines.next().unwrap().unwrap();
         let mut source_vec: Vec<String> = Vec::with_capacity(cell_count * cell_count);
 
         for line in lines {
