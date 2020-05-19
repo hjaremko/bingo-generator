@@ -1,4 +1,4 @@
-# Bingo Generator
+# Bingo Generator ![Rust](https://github.com/hjaremko/bingo-generator/workflows/Rust/badge.svg?branch=master)
 
 ## Running
 ```
