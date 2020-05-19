@@ -1,5 +1,5 @@
 name: bingo_generator
-version: "0.1.0"
+version: "0.1.1"
 author: hjaremko <hjaremko@outlook.com>
 about: Bingo generator
 args:
@@ -7,7 +7,7 @@ args:
         short: s
         long: source
         value_name: FILE
-        help: Specify source file (default source.txt)
+        help: Specify source file
         takes_value: true
     - cells:
         short: c
@@ -27,3 +27,9 @@ args:
         value_name: VALUE
         help: Specify amount of output files produced
         takes_value: true
+    - verbose:
+        short: v
+        long: verbose
+        help: Print log messages
+        takes_value: false
+        multiple: true

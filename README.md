@@ -13,6 +13,7 @@ USAGE:
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
+    -v, --verbose    Print log messages
 
 OPTIONS:
     -c, --cells <COUNT>      Specify grid size (default 5)

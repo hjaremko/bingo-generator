@@ -8,6 +8,9 @@ use std::io::{BufReader, BufRead};
 use std::fs::File;
 use std::borrow::Borrow;
 use clap::App;
+use log::{info, error, LevelFilter};
+
+mod logger;
 
 #[macro_use]
 extern crate clap;
@@ -56,14 +59,14 @@ impl<'a> Bingo<'a> {
 
     pub fn dump_to(&self, output_path: &str) {
         self.canvas.as_ref().unwrap().save(output_path).unwrap();
-        println!("Saved to: {}", output_path);
+        info!("Saved to: {}", output_path);
     }
 
     fn read_source(filename: &str, cell_count: usize) -> (Vec<String>, String) {
         let file = match File::open(filename) {
             Ok(t) => { t }
             Err(_) => {
-                println!("Error opening {}", &filename);
+                error!("Error opening {}", &filename);
                 std::process::exit(2);
             }
         };
@@ -161,9 +164,17 @@ fn main() {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();
 
+    let log_level = match matches.occurrences_of("verbose") {
+        0 => LevelFilter::Error,
+        1 => LevelFilter::Info,
+        _ => LevelFilter::max()
+    };
+
+    logger::init(log_level).unwrap();
+
     let source_file = match matches.value_of("source") {
         None => {
-            println!("You must specify source file");
+            error!("You must specify source file");
             std::process::exit(1)
         }
         Some(s) => { s }
@@ -173,8 +184,8 @@ fn main() {
     let output_file = matches.value_of("output").unwrap_or("bingo.png");
     let samples = matches.value_of("samples").unwrap_or("1").parse::<u32>().expect("Not a valid number");
 
-    println!("Using source file: {}", source_file);
-    println!("Grid: {0} x {0}", cell_count);
+    info!("Using source file: {}", source_file);
+    info!("Grid: {0} x {0}", cell_count);
 
     let mut bingo = Bingo::new(IMAGE_SIZE, cell_count, source_file);
 
